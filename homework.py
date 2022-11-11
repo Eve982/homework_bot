@@ -3,6 +3,7 @@ import os
 import sys
 import requests
 import time
+import exceptions
 import telegram
 from telegram.ext import Updater
 from dotenv import load_dotenv
@@ -38,11 +39,11 @@ def get_api_answer(current_timestamp):
     """Получение статуса домашней работы."""
     timestamp = current_timestamp or int(time.time())
     params = {"from_date": timestamp}
-    try:
-        response = requests.get(ENDPOINT, headers=HEADERS, params=params)
-    except requests.exceptions.RequestException:
+    response = requests.get(ENDPOINT, headers=HEADERS, params=params)
+    if response.status_code != 200:
         logging.error(f"URL-адрес {ENDPOINT} недоступен или использован "
                       "невалидный токен.")
+        raise exceptions.StatuCodeIsNotOK(response.status_code)
     homeworks = response.json()
     return homeworks
 
@@ -50,7 +51,6 @@ def get_api_answer(current_timestamp):
 def check_response(response):
     """Проверка корректности ответа."""
     logging.info("Проверка ответа.")
-    print(response)
     if not isinstance(response, dict):
         logging.error("Ответ не является словарем.", exc_info=True)
         raise TypeError("Ответ не является словарем.")
@@ -83,7 +83,7 @@ def parse_status(homework):
         raise Exception(f"Неизвестный статус домашней работы: "
                         f"{homework_status}")
     verdict = HOMEWORK_STATUSES[homework_status]
-    return f"Изменился статус проверки работы '{homework_name}'. {verdict}"
+    return f'Статус проверки работы "{homework_name}" изменился на {verdict}'
 
 
 def check_tokens():
@@ -120,8 +120,7 @@ def main():
                 current_timestamp = response.get("current_date")
             else:
                 logger.debug("Новые статусы проверки отсутствуют.")
-                raise Exception("Новые статусы проверки отсутствуют.")
-            time.sleep(RETRY_TIME)
+                send_message(bot, "Новые статусы проверки отсутствуют.")
         except Exception as error:
             logger.error(error)
             message = f"Сбой в работе программы: {error}"
