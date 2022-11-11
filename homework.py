@@ -83,7 +83,7 @@ def parse_status(homework):
         raise Exception(f"Неизвестный статус домашней работы: "
                         f"{homework_status}")
     verdict = HOMEWORK_STATUSES[homework_status]
-    return f'Статус проверки работы "{homework_name}" изменился на {verdict}'
+    return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
 def check_tokens():
