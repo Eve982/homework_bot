@@ -88,14 +88,8 @@ def parse_status(homework):
 
 def check_tokens():
     """Проверка доступности переменных окружения."""
-    MANDATORY_ENV_VARS = ["TELEGRAM_TOKEN", "PRACTICUM_TOKEN",
-                          "TELEGRAM_CHAT_ID"]
-    for var in MANDATORY_ENV_VARS:
-        if var not in os.environ:
-            logging.critical("Отсутствует обязательная переменная окружения: "
-                             "{}.")
-            return False
-        return True
+    if all((PRACTICUM_TOKEN, TELEGRAM_CHAT_ID, TELEGRAM_TOKEN)):
+        return bool
 
 
 def main():
@@ -114,6 +108,8 @@ def main():
     current_timestamp = int(time.time())
 
     if not check_tokens():
+        logging.critical("Отсутствует обязательная переменная окружения: "
+                         "{}.")
         sys.exit('Программа принудительно остановлена.')
     while True:
         try:
