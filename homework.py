@@ -43,7 +43,7 @@ def get_api_answer(current_timestamp):
     if response.status_code != 200:
         logging.error(f"URL-адрес {ENDPOINT} недоступен или использован "
                       "невалидный токен.")
-        raise exceptions.StatuCodeIsNotOK(response.status_code)
+        raise exceptions.StatusCodeIsNotOK(response.status_code)
     homeworks = response.json()
     return homeworks
 
