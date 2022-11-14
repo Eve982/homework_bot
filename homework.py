@@ -141,8 +141,10 @@ def main():
 
 if __name__ == "__main__":
     def signal_handler(signal, frame):
+        """Обработка ошибки KeyboardInterrupt."""
         logging.info("Работа программы остановлена вручную нажатием Ctrl+C.")
         sys.exit(0)
+
     signal.signal(signal.SIGINT, signal_handler)
     print('Нажмите Ctrl+C чтобы завершить выполнение программы.')
 
