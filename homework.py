@@ -4,13 +4,9 @@ import signal
 import sys
 import time
 from http import HTTPStatus
+from json.decoder import JSONDecodeError
 
 import requests
-
-try:
-    from json.decoder import JSONDecodeError
-except ImportError:
-    JSONDecodeError = ValueError
 import telegram
 from dotenv import load_dotenv
 from telegram.error import TelegramError
@@ -73,7 +69,7 @@ def check_response(response):
     if not isinstance(response, dict):
         logging.error("Ответ не является словарем.")
         raise TypeError("Ответ не является словарем.")
-    if "homeworks" not in response:
+    if "homeworks" not in response or "current_date" not in response:
         logging.error("В полученном словаре отсутствует ключ homeworks.")
         raise KeyError("В полученном словаре отсутствует ключ homeworks.")
     homeworks = response.get("homeworks")
