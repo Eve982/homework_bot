@@ -126,7 +126,7 @@ def main():
                 current_timestamp = response.get("current_date")
             else:
                 logger.debug("Новые статусы проверки отсутствуют.")
-                send_message(bot, "Новые статусы проверки отсутствуют.")
+                # send_message(bot, "Новые статусы проверки отсутствуют.")
         except Exception as error:
             logger.error(error)
             message = f"Сбой в работе программы: {error}"
